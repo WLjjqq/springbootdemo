@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UserMapper">
+
+   <resultMap id="BaseResultMap" type="com.example.entity.User">
+        <result column="id" jdbcType="INTEGER" property="id" />
+        <result column="userName" jdbcType="VARCHAR" property="userName" />
+        <result column="passWord" jdbcType="VARCHAR" property="passWord" />
+        <result column="realName" jdbcType="VARCHAR" property="realName" />
+    </resultMap>
+
+    <select id="Sel" resultType="com.example.entity.User">
+        select * from user where id = #{id}
+    </select>
+
+    <!--存储过程添加-->
+    <insert id="addUser" parameterType="com.example.entity.User" statementType="CALLABLE">
+        {call insert_user(
+		#{id,mode=OUT,jdbcType=INTEGER},#{userName,mode=IN},#{passWord,mode=IN},#{realName,mode=IN})}
+    </insert>
+
+    <!-- 存储过程删除用户 -->
+    <delete id="deleteUser" parameterType="Integer" statementType="CALLABLE">
+		{call deleteUser(#{id,mode=IN})}
+	</delete>
+
+    <!-- 更新用户 -->
+    <update id="updateUser" parameterType="com.example.entity.User" statementType="CALLABLE">
+		{call updateUser(#{id,mode=IN},#{userName,mode=IN},#{passWord,mode=IN},#{realName,mode=IN})}
+	</update>
+
+    <!--存储过程查询-->
+    <select id="getUserById" parameterType="Integer"  statementType="CALLABLE" resultMap="BaseResultMap">
+        {call getUserById(#{id,mode=IN})}
+    </select>
+</mapper>
